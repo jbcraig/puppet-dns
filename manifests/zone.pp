@@ -27,6 +27,7 @@ define dns::zone (
     content => template('dns/named.zone.erb'),
   }
 
+
   file { $zonefilename:
     ensure  => file,
     owner   => $dns::user,
@@ -36,4 +37,15 @@ define dns::zone (
     replace => false,
     notify  => Service[$::dns::namedservicename],
   }
+
+  file { "${zonefilename}.static":
+    ensure  => file,
+    owner   => $dns::user,
+    group   => $dns::group,
+    mode    => '0644',
+    notify  => Service[$::dns::namedservicename],
+  }
+    
+
+
 }
