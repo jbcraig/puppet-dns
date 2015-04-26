@@ -38,12 +38,29 @@ define dns::zone (
     notify  => Service[$::dns::namedservicename],
   }
 
+  concat_fragment { "dns-static-${zone}+01header.dnsstatic":
+    content => "; static file for ${zone}",
+  }
+
+  Dns::Record <<| tag == "dns_static_${zone}" |>> { notify => Concat_build["dns-static-${zone}"] }
+
+  concat_build { "dns-static-${zone}":
+    order   => [ '*.dnsstatic' ],
+    notify  => [
+      Service[$::dns::namedservicename],
+      File[ "${zonefilename}.static"],
+    ],
+  }
+
+
   file { "${zonefilename}.static":
     ensure  => file,
     owner   => $dns::user,
     group   => $dns::group,
     mode    => '0644',
     notify  => Service[$::dns::namedservicename],
+    source  => concat_output("dns-static-${zone}"),
+    require => Concat_build[ "dns-static-${zone}"],
   }
     
 
