@@ -1,5 +1,4 @@
 $TTL <%= @ttl %>
-$ORIGIN <%= @zone %>
 @ IN SOA <%= @soa %>. <%= @contact %> (
 	<%= @serial %>	;Serial
 	<%= @refresh %>	;Refresh
@@ -13,4 +12,4 @@ $ORIGIN <%= @zone %>
 <%= @soa %>. IN A <%= @soaip %>
 <% end %>
 
-$INCLUDE <%= @zonefilepath -%>/<%= @filename -%>.static
+$INCLUDE <%= @zonefilepath -%>/<%= @filename -%>.static <%= @zone -%>.
