@@ -42,7 +42,7 @@ define dns::zone (
     content => "; static file for ${zone}",
   }
 
-  Dns::Record <<| tag == "dns_static_${zone}" |>> { notify => Concat_build["dns-static-${zone}"] }
+  Dns::Record <<| |>> { notify => Concat_build["dns-static-${zone}"] }
 
   concat_build { "dns-static-${zone}":
     order   => [ '*.dnsstatic' ],

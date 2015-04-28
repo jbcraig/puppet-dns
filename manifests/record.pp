@@ -5,11 +5,9 @@ define dns::record (
   $target   = undef,
   $type     = undef,
   $priority = undef,
-  $tag      = "dns_static_${zone}",
 )
 {
 
-  tag $tag
   $dnstype = upcase($type)
 
   if $label == undef {
