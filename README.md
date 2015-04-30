@@ -22,6 +22,16 @@ Zones can be created with the `dns::zone` resource:
 Slaves can also be configured by setting `allow_transfer` in the master's zone
 and setting `zonetype => 'slave'` in the slave's zone.
 
+# Static records
+
+Create 'static' DNS records, such as CNAME records, using the `dns::record` type.
+
+    dns::record { 'foo.example.com':
+      target  => 'vm123.example.com.'
+      type    => 'CNAME'
+    }
+
+
 # Credits
 
 Based on zleslie-dns, with a lot of the guts ripped out. Thanks
