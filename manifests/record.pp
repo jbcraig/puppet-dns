@@ -1,29 +1,36 @@
 # Define new DNS record
 define dns::record (
   $zone     = undef,
-  $label    = $title,
+  $label    = undef,
   $target   = undef,
   $type     = undef,
   $priority = undef,
+  $comment  = '',
 )
 {
 
   $dnstype = upcase($type)
 
-  if $label == undef {
-    $label = $title
+  if ($label == undef) or ($zone == undef) {
+    $domain_array = split($title, '[.]' )
+    $_label = values_at($domain_array, 0)
+    $_zone = join(delete_at($domain_array, 0), '.')
+  } else {
+    $_label = $label
+    $_zone = $zone
   }
+  
   if $dnstype =~ /(CNAME|SRV|TXT|A|PTR)/ {
-    $line = "${label} IN ${dnstype} ${target}"
+    $line = "${_label} IN ${dnstype} ${target}  ; ${comment}"
   }
   elsif $dnstype == 'MX' {
-    $line = "${label} IN ${dnstype} ${priority} ${target}"
+    $line = "${_label} IN ${dnstype} ${priority} ${target}  ; ${comment}"
   }
   else {
     warning('Incorrect DNS record type specified')
   }
 
-  concat_fragment { "dns-static-${zone}+${title}.dnsstatic":
+  concat_fragment { "dns-static-${_zone}+${title}.dnsstatic":
     content => $line,
   }
 
