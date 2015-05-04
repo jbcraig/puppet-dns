@@ -39,6 +39,15 @@ describe 'dns::zone' do
     })
   end
 
+  it "should create zone static file" do
+    should contain_file('/var/named/dynamic/db.example.com.static').with({
+      :owner    => 'named',
+      :group    => 'named',
+      :mode     => '0644',
+      :notify   => 'Service[named]',
+    })
+  end
+
   it "should have valid zone file contents" do
     verify_exact_contents(subject, '/var/named/dynamic/db.example.com', [
       '$TTL 10800',
@@ -51,6 +60,7 @@ describe 'dns::zone' do
       ')',
       '@ IN NS puppetmaster.example.com.',
       'puppetmaster.example.com. IN A 192.168.1.1',
+      '$INCLUDE /var/named/dynamic/db.example.com.static example.com.'
     ])
   end
 
@@ -69,6 +79,7 @@ describe 'dns::zone' do
         '	3600	;Negative caching TTL',
         ')',
         '@ IN NS puppetmaster.example.com.',
+        '$INCLUDE /var/named/dynamic/db.1.168.192.in-addr.arpa.static 1.168.192.in-addr.arpa.'
       ])
     end
   end
