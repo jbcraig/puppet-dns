@@ -21,7 +21,6 @@ describe 'dns::record' do
 
   let :pre_condition do
     'include dns'
-    'include stdlib'
   end
 
   it "should have valid record configuration" do
