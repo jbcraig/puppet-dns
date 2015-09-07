@@ -3,4 +3,8 @@ directory "<%= scope.lookupvar('::dns::vardir') %>";
 forwarders { <%= scope.lookupvar('::dns::forwarders').join("; ") %>; };
 <% end -%>
 
+allow-recursion { 192.168/16; 127/8; };
+allow-query { 192.168/16; 127/8; };
+allow-query-cache { 192.168/16; 127/8; };
+
 listen-on-v6 { <%= scope.lookupvar('::dns::listen_on_v6') %>; };

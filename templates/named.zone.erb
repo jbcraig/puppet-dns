@@ -8,6 +8,7 @@ zone "<%= @zone %>" {
 <% end -%>
 <% unless @allow_transfer.empty? -%>
     allow-transfer { <%= @allow_transfer.join('; ') %>; };
+    also-notify { <%= @allow_transfer.join('; ') %>; };
 <% end -%>
 <% unless @masters.empty? -%>
     masters { <%= @masters.join('; ') %>; };
