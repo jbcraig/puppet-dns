@@ -24,8 +24,10 @@ define dns::zone (
 
   $zonefilename = "${zonefilepath}/${filename}"
 
-  concat_fragment { "dns_zones+10_${zone}.dns":
+  concat::fragment { "dns_zones+10_${zone}.dns":
+    target  => $::dns::publicviewpath,
     content => template('dns/named.zone.erb'),
+    order   => "10-${zone}",
   }
 
   file { $zonefilename:
@@ -39,29 +41,18 @@ define dns::zone (
   }
 
   if ($static_records == true) and ($zonetype == 'master')  {
-    concat_fragment { "dns-static-${zone}+01header.dnsstatic":
+    concat::fragment { "dns-static-${zone}+01header.dnsstatic":
+      target  => "${zonefilename}.nsupdate",
       content => template('dns/static-header.erb'),
     }
   
     Dns::Record <<| |>> { notify => Concat_build["dns-static-${zone}"] }
   
-    concat_build { "dns-static-${zone}":
-      order  => [ '*.dnsstatic' ],
-      notify => [
-        #Service[$::dns::namedservicename],
-        File[ "${zonefilename}.nsupdate"],
-      ],
-    }
-  
-    file { "${zonefilename}.nsupdate":
-      ensure  => file,
+    concat { "dns-static-${zone}":
       owner   => $dns::user,
       group   => $dns::group,
       mode    => '0644',
-      # notify  => Service[$::dns::namedservicename],
       notify  => Exec["update_dns_${zone}"],
-      source  => concat_output("dns-static-${zone}"),
-      require => Concat_build[ "dns-static-${zone}"],
     }
 
     exec { "update_dns_${zone}":

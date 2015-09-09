@@ -64,8 +64,9 @@ define dns::record (
     fail("Incorrect DNS record type specified for record ${title}")
   }
 
-  concat_fragment { "dns-static-${_zone}+02content-${title}.dnsstatic":
+  concat::fragment { "dns-static-${_zone}+02content-${title}.dnsstatic":
     content => $line,
+    target  => "${dns:zonefilepath}/${_zone}",
   }
 
 }
