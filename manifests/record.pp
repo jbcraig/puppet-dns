@@ -65,8 +65,8 @@ define dns::record (
   }
 
   concat::fragment { "dns-static-${_zone}+02content-${title}.dnsstatic":
-    content => $line,
-    target  => "${dns:zonefilepath}/${_zone}",
+    content => "${line}\n",
+    target  => "${dns::zonefilepath}/db.${_zone}.nsupdate",
   }
 
 }

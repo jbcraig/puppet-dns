@@ -46,9 +46,9 @@ define dns::zone (
       content => template('dns/static-header.erb'),
     }
   
-    Dns::Record <<| |>> { notify => Concat_build["dns-static-${zone}"] }
+    Dns::Record <<| |>>
   
-    concat { "dns-static-${zone}":
+    concat { "${zonefilename}.nsupdate":
       owner   => $dns::user,
       group   => $dns::group,
       mode    => '0644',
@@ -64,6 +64,6 @@ define dns::zone (
         File[$zonefilename],
       ],
     }
-  }
+   }
 
 }
